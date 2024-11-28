@@ -13,8 +13,7 @@ This application checks plagiarism between two documents and visualizes the resu
 ### Clone Repository
 
 ```bash
-git clone https://github.com/Jordan-Keys/PliagiarismCheckerWIthHeatmap.git
-cd PliagiarismCheckerWIthHeatmap
+git clone https://github.com/FaithAgnes/PliagiarismCheckerWIthHeatmapLibrary.git
 ```
 ### Build Docker Image
 
