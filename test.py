@@ -1,8 +1,8 @@
 import requests
 
 # Paths to the documents on the developer's system
-doc1_path = '/home/jalvin/Downloads/Document1_AI.docx'
-doc2_path = '/home/jalvin/Downloads/Drops/indexsubtitle.txt'
+doc1_path = '/path-to/Document1.docx'
+doc2_path = '/path-to/Document2.docx'
 
 # Base URL for your API
 base_url = 'http://172.17.0.2:5000'
@@ -32,7 +32,7 @@ if relative_heatmap_url:
     heatmap_response.raise_for_status()  # Ensure successful download status
     
     # Save the image locally
-    heatmap_path = '/home/jalvin/Downloads/Drops/heatmap.png'
+    heatmap_path = 'imagepath/image.png'
     with open(heatmap_path, 'wb') as f:
         for chunk in heatmap_response.iter_content(chunk_size=8192):
             f.write(chunk)
