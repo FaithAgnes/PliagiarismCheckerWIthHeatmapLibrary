@@ -40,10 +40,14 @@ def check_plagiarism():
         # Return result with score and heatmap
         return jsonify({'score': score, 'heatmap_url': '/download_heatmap'}), 200
 
-    finally:
-        # Remove temporary files from the container's perspective
-        os.remove(doc1_path)
-        os.remove(doc2_path)
+    except Exception as e:
+        # Handle exceptions and return error response
+        return jsonify({'error': str(e)}), 500
+
+    # Remove the cleanup code (if you still want to clear up occasionally, consider manual or scheduled cleanups)
+    # finally:
+    #     os.remove(doc1_path)
+    #     os.remove(doc2_path)
 
 @app.route('/download_heatmap', methods=['GET'])
 def download_heatmap():
