@@ -5,10 +5,12 @@ import pandas as pd
 from rouge_score import rouge_scorer
 import docx2txt
 from typing import List, Tuple
+from nltk import sent_tokenize
 
 def plagiarism_checker(text1_path: str, text2_path: str) -> Tuple[float, List[Tuple[int, int, float]]]:
     """Checks plagiarism and generates heatmap data between two documents."""
     try:
+        # Reading documents
         if text1_path.lower().endswith(('.doc', '.docx')):
             text1 = docx2txt.process(text1_path)
         elif text1_path.lower().endswith('.txt'):
@@ -26,13 +28,22 @@ def plagiarism_checker(text1_path: str, text2_path: str) -> Tuple[float, List[Tu
             raise ValueError("Unsupported file format for text2.")
 
         scorer = rouge_scorer.RougeScorer(['rougeL'], use_stemmer=True)
-        scores = scorer.score(text1, text2)
-        rouge_l_f1 = scores['rougeL'].fmeasure
 
-        # Generate placeholder heatmap data
-        heatmap_data = [(i, j, (i + j) / 20) for i in range(10) for j in range(10)] 
+        # Split documents into sentences
+        text1_sentences = sent_tokenize(text1)
+        text2_sentences = sent_tokenize(text2)
 
-        return rouge_l_f1 * 100, heatmap_data
+        # Calculate similarity scores for each pair of sentences
+        heatmap_data = []
+        for i, sent1 in enumerate(text1_sentences):
+            for j, sent2 in enumerate(text2_sentences):
+                score = scorer.score(sent1, sent2)['rougeL'].fmeasure
+                heatmap_data.append((i, j, score))
+
+        # Calculate overall Rouge-L score
+        overall_score = scorer.score(text1, text2)['rougeL'].fmeasure * 100
+
+        return overall_score, heatmap_data
 
     except FileNotFoundError:
         print("Error: One or both files not found.")
@@ -56,4 +67,4 @@ def visualize_heatmap(heatmap_data, doc1_name="Document 1", doc2_name="Document 
     plt.xlabel(doc2_name)
     plt.ylabel(doc1_name)
     plt.savefig(save_path)
-    plt.close()  # Use plt.close() instead of plt.show() to prevent GUI displaying in script executions
+    plt.close()
